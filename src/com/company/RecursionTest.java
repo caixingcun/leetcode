@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -8,8 +9,14 @@ import java.util.List;
  */
 public class RecursionTest {
     public static void main(String[] args) {
-        int[] arr = {2, 3, 6, 7};
-        System.out.println(combinationSum(arr, 7));
+        //组合总和
+//        int[] arr = {2, 3, 6, 7};
+//        System.out.println(combinationSum(arr, 7));
+
+        //组合总和2
+//        int[] arr = {10, 1, 2, 7, 6, 1, 5};
+        int[] arr = {2,5,2,1,2};
+        System.out.println(combinationSum2(arr, 5));
     }
 
     /**
@@ -61,11 +68,56 @@ public class RecursionTest {
 
         // 当前pos
         if (candidates[pos] <= target) {
-            temp.add(candidates[pos]);
-            dfs(candidates, result, temp, pos, target-candidates[pos]);
-            temp.remove(temp.size()-1);
+            temp.add(candidates[pos]);//添加当前位置值到 集合
+            dfs(candidates, result, temp, pos, target - candidates[pos]);
+            temp.remove(temp.size() - 1); //回溯   不能让
         }
 
+    }
+
+    /**
+     * 组合总数 只能使用一次
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> template = new ArrayList<>();
+        Arrays.sort(candidates);
+        System.out.println(Arrays.toString(candidates));
+        dsf2(candidates, result, template, 0, target);
+
+        List<List<Integer>> newResult = new ArrayList<>();
+
+        for (int i = 0; i < result.size(); i++) {
+            if (!newResult.contains(result.get(i))) {
+            newResult.add(result.get(i));
+            }
+        }
+        return newResult;
+    }
+
+    private static void dsf2(int[] candidates, List<List<Integer>> result, List<Integer> template, int pos, int target) {
+
+        if (target == 0) {
+            result.add(new ArrayList<>(template));
+            return;
+        }
+        if (pos == candidates.length) {
+            return;
+        }
+        //直接跳过 动作忽略 不算当前pos  进行下一种情况分支
+        dsf2(candidates, result, template, pos + 1, target);
+
+        // 判断当前pos 加进来 进行下一种情况
+        if (candidates[pos] <= target) {
+            template.add(candidates[pos]);
+            dsf2(candidates, result, template, pos + 1, target - candidates[pos]);
+            template.remove(template.size() - 1);
+        }
+        //直接超出的 不会计入 result
     }
 
 }
