@@ -27,18 +27,22 @@ public class NumberTest {
 //        nextPermutation(arr);
 //        System.out.println(Arrays.toString(arr));
 
-        int[] arr = new int[]{2,3,6,7};
-        List<List<Integer>> lists = combinationSum(arr, 7);
-        System.out.println(lists);
+//        int[] arr = new int[]{2, 3, 6, 7};
+//        List<List<Integer>> lists = combinationSum(arr, 7);
+//        System.out.println(lists);
+
+        int[] arr = {0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1};
+        System.out.println(longestOnes1(arr, 3));
     }
 
     /**
      * 找出下一个 整数  ，用nums中 数据排列 ，如果没有返回最小的数 升序排列
-     *
+     * <p>
      * 双循环找出 最右符合条件的 left
      * 根据最符合条件的 left 找出 最小的right
      * 更换 left 与 right 数据
      * left+1 - len-1  重新排序
+     *
      * @param nums
      */
     public static void nextPermutation(int[] nums) {
@@ -71,7 +75,7 @@ public class NumberTest {
         int min_num = 101; //范围 0-100
         right = len - 1;
         while (max_left < right) {
-            if (min_num > nums[right]&&nums[right]>nums[max_left]) {
+            if (min_num > nums[right] && nums[right] > nums[max_left]) {
                 min_num = nums[right];
                 min_num_index = right;
             }
@@ -82,32 +86,31 @@ public class NumberTest {
         nums[max_left] = nums[min_num_index];
         nums[min_num_index] = temp;
         System.out.println(Arrays.toString(nums));
-        Arrays.sort(nums,max_left+1,len);
+        Arrays.sort(nums, max_left + 1, len);
 
 
     }
 
     /**
-     *
      * 递归回溯（组合优化问题/排序选择问题）
-     *
-     *
+     * <p>
+     * <p>
      * 组合总和
-     *
+     * <p>
      * [A,B,C,D]  target X  index = 0
-     *
-     *
+     * <p>
+     * <p>
      * A <= X  [A]          index = 0
      * X = X-A
-     *
+     * <p>
      * A <= X  [A,A]        index = 0
      * X = X-A
      * ...
      * A ==0  result.add[A,A...]
-     *
+     * <p>
      * 每次进来                 index = 1
      * [B,C,D]  target
-     *
+     * <p>
      * 搜索回溯
      *
      * @param candidates
@@ -118,7 +121,7 @@ public class NumberTest {
     public static List<List<Integer>> combinationSum(int[] candidates, int target) {
         List<List<Integer>> result = new ArrayList<>(); //定义结果
         List<Integer> combine = new ArrayList<>();  //定义组合
-        dfs(candidates, target, result,combine, 0); //从第一个数开始 递归
+        dfs(candidates, target, result, combine, 0); //从第一个数开始 递归
 
         return result;
     }
@@ -142,11 +145,83 @@ public class NumberTest {
         if (target - candidates[index] >= 0) {  //符合条件
             combine.add(candidates[index]); // 加进combine
             //继续递归  目标值 - 当前值 作为目标值继续递归
-            dfs(candidates, target - candidates[index], result,combine, index);
+            dfs(candidates, target - candidates[index], result, combine, index);
             // 回朔  移除之前 最后一个 加紧 combine 集合的数
             combine.remove(combine.size() - 1); //
         }
     }
 
+    /**
+     * Given  A = [1,1,1,0,0,0,1,1,1,1,0], K = 2
+     * Return 6
+     * <p>
+     * 允许K次翻转 求A经过K次反转后 最长连续1的长度
+     *
+     * @param A
+     * @param K 允许反转的次数
+     * @return 思路 双循环 计算出每一个 长度Len 之间的 累加值X  Len-X 表示整个长度中的0的数量
+     * Len-X >=3 的最大Len
+     */
+    public static int longestOnes(int[] A, int K) {
+        int len = A.length;
+        int xLen = A.length;  //需要寻找的最长长度 从 len - 1
+
+        while (xLen > 0) {
+            for (int i = 0; i < len - xLen; i++) {
+                int sum = 0;
+                for (int j = i; j < i + xLen; j++) { //j 从i - i+xLen-1  保证长度 len
+                    sum += A[j];
+                }
+                if (xLen - sum <= K) { //缺的0 小于K个
+                    return xLen;
+                }
+            }
+            xLen--; //长度小一点 再来一遍 看当前长度是否符合条件
+        }
+        return -1;   //不会走到这里
+    }
+
+    /**
+     * 双指针 滑动窗口
+     *
+     * @param A
+     * @param K
+     * @return
+     */
+    /**
+     *      *  超时
+     *      *  官方示例 思路
+     *      *   left right 双指针 同时指向 index = 0
+     *      *   记录right 移动过位置0次数  zero++
+     *      *   一旦累计数>K ， while循环,直到left-right之间zero<-k  A[left] ==0  zero-- 右移left，
+     *      *   每次right 右移 并且在上一行 left 右移 救场后， 记录下 left -right 之间的最大距离
+     *      //    0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1
+     * //         ^
+     * //           ^
+     *      *
+     *      */
+
+
+    public static int longestOnes1(int[] A, int K) {
+        int left = 0;
+        int right = 0;
+        int result = 0;
+        int zero = 0;
+        //右指针 指向len 终止
+        while (right < A.length) {
+            if (A[right] == 0) {
+                zero++;
+                while (zero > K) {
+                    if (A[left] == 0) {
+                        zero--;
+                    }
+                    left++;
+                }
+            }
+            result = Math.max(result, right - left + 1);
+            right++;
+        }
+        return result;
+    }
 
 }
