@@ -12,7 +12,7 @@ public class StringTest {
 //        String[] arr = {"foo", "bar"};
 //        System.out.println(findSubstring(s, arr));
 
-        System.out.println(countAndSay(5));
+//        System.out.println(countAndSay(5));
     }
 
     public static int strStr(String haystack, String needle) {
@@ -121,5 +121,34 @@ public class StringTest {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 44 通配符匹配
+     *  ? 匹配任何单个字符
+     *  * 匹配任意字符串 包含空字符串
+     *
+     *  Given  aa  a
+     *  Return false
+     *
+     *  Given   aa  *
+     *  Return  true
+     *
+     *  Given  cb  ?b
+     *  Return  true
+     *
+     *  Given adceb a*b
+     *  Return true
+     *
+     *  动态规划？
+     *
+     *
+     * @param s 需要匹配的字符串
+     * @param p 正则
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+
+        return false;
     }
 }
