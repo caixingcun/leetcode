@@ -2,9 +2,7 @@ import javafx.util.Pair;
 import org.omg.CORBA.INTERNAL;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class NumberTest {
@@ -31,8 +29,11 @@ public class NumberTest {
 //        List<List<Integer>> lists = combinationSum(arr, 7);
 //        System.out.println(lists);
 
-        int[] arr = {0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1};
-        System.out.println(longestOnes1(arr, 3));
+//        int[] arr = {0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1};
+//        System.out.println(longestOnes1(arr, 3));
+
+
+        System.out.println(multiply("9", "9"));
     }
 
     /**
@@ -189,17 +190,17 @@ public class NumberTest {
      * @return
      */
     /**
-     *      *  超时
-     *      *  官方示例 思路
-     *      *   left right 双指针 同时指向 index = 0
-     *      *   记录right 移动过位置0次数  zero++
-     *      *   一旦累计数>K ， while循环,直到left-right之间zero<-k  A[left] ==0  zero-- 右移left，
-     *      *   每次right 右移 并且在上一行 left 右移 救场后， 记录下 left -right 之间的最大距离
-     *      //    0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1
+     * *  超时
+     * *  官方示例 思路
+     * *   left right 双指针 同时指向 index = 0
+     * *   记录right 移动过位置0次数  zero++
+     * *   一旦累计数>K ， while循环,直到left-right之间zero<-k  A[left] ==0  zero-- 右移left，
+     * *   每次right 右移 并且在上一行 left 右移 救场后， 记录下 left -right 之间的最大距离
+     * //    0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1
      * //         ^
      * //           ^
-     *      *
-     *      */
+     * *
+     */
 
 
     public static int longestOnes1(int[] A, int K) {
@@ -222,6 +223,70 @@ public class NumberTest {
             right++;
         }
         return result;
+    }
+
+    /**
+     * 不使用bigInteger实现两个整数相乘
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public static String multiply(String num1, String num2) {
+
+        Map<Character, Integer> map = new HashMap<>();
+        map.put('0', 0);
+        map.put('1', 1);
+        map.put('2', 2);
+        map.put('3', 3);
+        map.put('4', 4);
+        map.put('5', 5);
+        map.put('6', 6);
+        map.put('7', 7);
+        map.put('8', 8);
+        map.put('9', 9);
+
+
+        if (num1.equals("0") || num2.equals("0")) {
+            return "0";
+        }
+
+        int len_num1 = num1.length();
+        int len_num2 = num2.length();
+        int[] result = new int[len_num1 + len_num2 + 1];
+        for (int i = 0; i < num1.length(); i++) {
+            Integer temp = map.get(num1.charAt(len_num1 - i - 1));
+            for (int j = 0; j < num2.length(); j++) {
+                int mul = map.get(num2.charAt(len_num2 - j - 1)) * temp;//新数字 0-81
+                int index = j + i;
+                add(result, index, mul);
+
+            }
+        }
+
+
+        StringBuilder sb = new StringBuilder();
+        boolean flag = false;
+        for (int i = result.length - 1; i >= 0; i--) {
+            if (result[i] != 0) {
+                flag = true;
+            }
+            if (flag) {
+                sb.append(result[i]);
+            }
+        }
+        return sb.toString();
+    }
+
+    private static void add(int[] result, int index, int a) {
+        if (result[index] + a >= 10) {
+            int more = (a + result[index]) / 10;
+            result[index] = (a + result[index]) % 10;
+
+            add(result, index + 1, more);
+        } else {
+            result[index] = result[index] + a;
+        }
     }
 
 }
