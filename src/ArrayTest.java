@@ -15,7 +15,8 @@ public class ArrayTest {
 //        System.out.println(i);
 
 
-
+        int[] arr = {1, 2, 2, 3, 1};
+        System.out.println(findShortestSubArray(arr));
     }
 
     /**
@@ -88,6 +89,7 @@ public class ArrayTest {
 
     /**
      * 数独判断
+     *
      * @param board
      * @return
      */
@@ -134,24 +136,24 @@ public class ArrayTest {
                 //行
                 if (lines[i].contains(c)) {
                     return false;
-                }else{
+                } else {
                     lines[i].add(c);
                 }
                 //列
                 if (rows[j].contains(c)) {
                     return false;
-                }else{
+                } else {
                     rows[j].add(c);
                 }
                 //栅格
                 int bdIndex = 0;
                 int line = i / 3;
                 int row = j / 3;
-                bdIndex = line + 3*row;
+                bdIndex = line + 3 * row;
 
                 if (bdList[bdIndex].contains(c)) {
                     return false;
-                }else{
+                } else {
                     bdList[bdIndex].add(c);
                 }
             }
@@ -160,7 +162,67 @@ public class ArrayTest {
 
     }
 
+    /**
+     * 697  数组的度 最短连续子数组
+     */
+    public static int findShortestSubArray(int[] nums) {
 
+        //找出数组中的度  及其元素
+        // 找出 子串 ，子串的度与数组相同，并且子串最短
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        //获取每个数的数量
+        int max = 0;
+        List<Integer> levelNums = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            Integer value = entry.getValue();
+            Integer key = entry.getKey();
+            if (value == max) {
+                levelNums.add(key);
+            } else if (value > max) {
+                levelNums.clear();
+                levelNums.add(key);
+                max = value;
+            }
+        }
+        // num   int[0] =left int[1] = right
+        Map<Integer, int[]> result = new HashMap<>();
 
+        // 拿到了最高阶的元素
+        //双指针  从左往右  从右往左  第一次遇到 highLevelNum 记录下来即可
+
+        for (int i = 0; i < nums.length; i++) {
+            int num_left = nums[i];
+            if (levelNums.contains(num_left)) {
+                int[] ints = result.getOrDefault(num_left, new int[]{nums.length, 0});
+                ints[0] = Math.min(ints[0], i);
+                result.put(num_left, ints);
+            }
+        }
+
+        int j = nums.length - 1;
+        while (j >= 0) {
+            int num = nums[j];
+            if (levelNums.contains(num)) {
+                int[] ints = result.getOrDefault(num, new int[]{nums.length, 0});
+                ints[1] = Math.max(ints[1], j); //保存最右边的第一个出现num的j
+                result.put(num, ints);
+            }
+            j--;
+        }
+
+        int minLen = nums.length;
+        for (Map.Entry<Integer, int[]> integerEntry : result.entrySet()) {
+            int[] value = integerEntry.getValue();
+            int left = value[0];
+            int right = value[1];
+            minLen = Math.min(right - left + 1, minLen);
+        }
+
+        return minLen;
+    }
 
 }
