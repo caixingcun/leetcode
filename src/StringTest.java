@@ -12,7 +12,7 @@ public class StringTest {
 //        String[] arr = {"foo", "bar"};
 //        System.out.println(findSubstring(s, arr));
 
-        System.out.println(countAndSay(5));
+//        System.out.println(countAndSay(5));
     }
 
     public static int strStr(String haystack, String needle) {
@@ -122,4 +122,79 @@ public class StringTest {
 
         return sb.toString();
     }
+
+    /**
+     * 44 通配符匹配
+     *  ? 匹配任何单个字符
+     *  * 匹配任意字符串 包含空字符串
+     *
+     *  Given  aa  a
+     *  Return false
+     *
+     *  Given   aa  *
+     *  Return  true
+     *
+     *  Given  cb  ?b
+     *  Return  true
+     *
+     *  Given adceb a*b
+     *  Return true
+     *
+     *  动态规划？
+     *
+     *
+     * @param s 需要匹配的字符串
+     * @param p 正则
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+
+        return false;
+    }
+
+    /**
+     * 同元素字符串分组
+     * 字符串相同 排列不同的 字符串进行分组
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> result = new ArrayList<>();
+        Map<String, List<String>> map = new HashMap<>();
+        for (int i = 0; i < strs.length; i++) {
+            String str = strs[i];
+            String hash = strAnagramsHash(str);
+            if (map.containsKey(hash)) {
+                List<String> oldList = map.get(hash);
+                oldList.add(str);
+                map.put(hash, oldList);
+            }else{
+                List<String> list = new ArrayList<>();
+                list.add(str);
+                map.put(hash, list);
+            }
+        }
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            List<String> value = entry.getValue();
+            result.add(value);
+        }
+        return result;
+    }
+
+    /**
+     * 用排序后数组作为 字符串hash值
+     * @param s1
+     * @return
+     */
+    public String strAnagramsHash(String s1){
+        char[] chars = s1.toCharArray();
+        Arrays.sort(chars);
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            sb.append(chars[i]);
+        }
+        return sb.toString();
+    }
+
 }
