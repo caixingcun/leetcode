@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -17,8 +14,15 @@ public class MergeIntervals {
         // merge interval
 //        testMergeInterval();
         // insert interval
-        testInsertInterval();
+//        testInsertInterval();
+        int arr[][] = new int[][]{
+                {8, 10}, {15, 18}, {1, 3}, {2, 6}
+        };
+        int[][] merge = new MergeIntervals().merge(arr);
 
+        for (int i = 0; i < merge.length; i++) {
+            System.out.println(Arrays.toString(merge[i]));
+        }
     }
 
     private static void testInsertInterval() {
@@ -69,7 +73,7 @@ public class MergeIntervals {
             } else if (cur.start > newInterval.end) { // 可以直接插入到当前元素前方
                 result.add(newInterval);
                 newInterval = cur;
-            } else if (cur.end >= newInterval.start||cur.start<=newInterval.end) {//有交叉
+            } else if (cur.end >= newInterval.start || cur.start <= newInterval.end) {//有交叉
                 newInterval = new Interval(Math.min(cur.start, newInterval.start), Math.max(cur.end, newInterval.end));
             }
         }
@@ -128,6 +132,41 @@ public class MergeIntervals {
         public int compare(Interval o1, Interval o2) {
             return o1.start - o2.start;
         }
+    }
+
+
+    public int[][] merge(int[][] intervals) {
+        // 区间问题
+        // 先排序
+        // 判断区间关系 进行合并 包含/反包含 部分重叠 不重叠
+
+        Arrays.sort(intervals,(o1,o2)->o1[0]-o2[0]);
+
+        int length = intervals.length;
+        int[] temp = intervals[0];
+        List<int[]> result_list = new ArrayList<>();
+        for (int i = 1; i < length; i++) {
+            int temp_left = temp[0];
+            int temp_right = temp[1];
+            int[] interval = intervals[i];
+            int curr_left = interval[0];
+            int curr_right = interval[1];
+            //已经排序 temp_left < curr_right
+            if (temp_right>=curr_left) { //有相交 合并
+                temp = new int[]{Math.min(temp_left, curr_left), Math.max(temp_right, curr_right)};
+            }else{ //不相交
+                result_list.add(temp);
+                temp = interval;
+            }
+        }
+        result_list.add(temp);
+        int[][] result = new int[result_list.size()][];
+
+        for (int i = 0; i < result_list.size(); i++) {
+            result[i] = result_list.get(i);
+        }
+
+        return result;
     }
 }
 
