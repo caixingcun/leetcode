@@ -151,4 +151,50 @@ public class StringTest {
 
         return false;
     }
+
+    /**
+     * 同元素字符串分组
+     * 字符串相同 排列不同的 字符串进行分组
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> result = new ArrayList<>();
+        Map<String, List<String>> map = new HashMap<>();
+        for (int i = 0; i < strs.length; i++) {
+            String str = strs[i];
+            String hash = strAnagramsHash(str);
+            if (map.containsKey(hash)) {
+                List<String> oldList = map.get(hash);
+                oldList.add(str);
+                map.put(hash, oldList);
+            }else{
+                List<String> list = new ArrayList<>();
+                list.add(str);
+                map.put(hash, list);
+            }
+        }
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            List<String> value = entry.getValue();
+            result.add(value);
+        }
+        return result;
+    }
+
+    /**
+     * 用排序后数组作为 字符串hash值
+     * @param s1
+     * @return
+     */
+    public String strAnagramsHash(String s1){
+        char[] chars = s1.toCharArray();
+        Arrays.sort(chars);
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            sb.append(chars[i]);
+        }
+        return sb.toString();
+    }
+
 }
