@@ -26,7 +26,7 @@ public class Permutations3 {
         List<List<Integer>> res = new ArrayList<>();
         List<Integer> path = new ArrayList<>();
         vis = new boolean[nums.length];
-        Arrays.sort(nums);
+        Arrays.sort(nums); //规避 3303 类型 剪枝不彻底
         dfs(nums, path, res, 0);
         return res;
     }
