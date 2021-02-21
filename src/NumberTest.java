@@ -33,8 +33,22 @@ public class NumberTest {
 //        System.out.println(longestOnes1(arr, 3));
 
 
-        System.out.println(multiply("9", "9"));
+//        System.out.println(multiply("9", "9"));
+
+        //不同路径
+
+//        System.out.println(new NumberTest().uniquePaths2(10, 10));
+
+
+        int[][] arr ={
+                {1,3,1},
+                {1,5,1},
+                {4,2,1}
+        };
+        System.out.println(new NumberTest().minPathSum(arr));
+
     }
+
 
     /**
      * 找出下一个 整数  ，用nums中 数据排列 ，如果没有返回最小的数 升序排列
@@ -289,5 +303,140 @@ public class NumberTest {
         }
     }
 
+    /**
+     * 机器人方法2  动态规划
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int uniquePaths2(int m, int n) {
+        //1.定义状态数组
+        int[][] f = new int[m][n]; //到到 m n的线路数
 
+        //2.初始化状态数组
+        //因为 到m n 就得到 m-1，n 或者m，n-1
+        for (int i = 0; i < m; i++) { //到顶部所有网格
+            f[i][0] = 1;
+        }
+        for (int j = 0; j < n; j++) { //到左侧所有网格
+            f[0][j] = 1;
+        }
+        //3.状态转移方程
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                f[i][j] = f[i - 1][j] + f[i][j - 1];
+            }
+        }
+
+        return f[m - 1][n - 1];
+    }
+
+    /**
+     * mxn的网格 从左上 - 右下 最小路径和
+     *
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        //动态规划
+        int m = grid.length;
+        int n = grid[0].length;
+        //1.定义状态方程   存储左上 到每一个格子的 总和
+        int[][] dp = new int[m][n];
+
+        //2.初始化动态方程
+        dp[0][0] = grid[0][0];
+
+        for (int i = 1; i < m; i++) {
+            dp[i][0] = dp[i - 1][0] + grid[i][0];
+        }
+
+        for (int i = 1; i < n; i++) {
+            dp[0][i] = dp[0][i - 1] + grid[0][i];
+        }
+        //3.状态转移方程
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+                System.out.println(dp[i][j]);
+            }
+        }
+
+        for (int i = 0; i < dp.length; i++) {
+            System.out.println(Arrays.toString(dp[i]));
+        }
+        //4.return
+
+        return dp[m - 1][n - 1];
+    }
+
+    /**
+     * 机器人位于 mxn网格 左上 要去右下  求其不同路径
+     * 只能向右/向下
+     * 路径规划
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int uniquePaths(int m, int n) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+        dfs(m - 1, n - 1, result, temp);
+        return result.size();
+    }
+
+    private void dfs(int right_time, int bottom_time, List<List<Integer>> result, List<Integer> temp) {
+        if (right_time == 0 && bottom_time == 0) { //次数用完 结束
+            result.add(temp);
+            return;
+        }
+
+        if (right_time > 0) {
+            temp.add(1); //1表示right
+            dfs(right_time - 1, bottom_time, result, temp);
+            temp.remove(temp.size() - 1);//回溯
+        }
+
+        if (bottom_time > 0) {
+            temp.add(0); //1表示bottom
+            dfs(right_time, bottom_time - 1, result, temp);
+            temp.remove(temp.size() - 1);//回溯
+        }
+
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
