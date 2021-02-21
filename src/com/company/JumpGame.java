@@ -24,13 +24,15 @@ import java.util.Map;
  */
 public class JumpGame {
     public static void main(String[] args) {
-        int[] arr = new int[]{2, 9, 6, 5, 7, 0, 7, 2, 7, 9, 3, 2, 2, 5, 7, 8, 1, 6, 6, 6, 3, 5, 2, 2, 6, 3};
-        int jump = new JumpGame().jump(arr);
-        System.out.println(jump);
+//        int[] arr = new int[]{2, 9, 6, 5, 7, 0, 7, 2, 7, 9, 3, 2, 2, 5, 7, 8, 1, 6, 6, 6, 3, 5, 2, 2, 6, 3};
+//        int jump = new JumpGame().jump(arr);
+//        System.out.println(jump);
+
+        int[] arr = new int[]{3, 2, 1, 0, 4};
+        System.out.println(new JumpGame().canJump(arr));
     }
 
     int memory_path_size;
-    List<Integer> memory_path = new ArrayList<>();
 
     public int jump(int[] nums) {
         memory_path_size = nums.length;
@@ -64,6 +66,30 @@ public class JumpGame {
             path.remove(path.size() - 1);
         }
 
+    }
+
+    /**
+     * 是否能跳到最后一步
+     * 贪心算法
+     * 遍历每一步 +其数字 看是否能达到 最大长度
+     *
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+//        3,2,1,0,4
+
+        int max_index = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i <= max_index) {  // 当前位置可以达到之前能达到的最大范围
+                max_index = Math.max(nums[i] + i, max_index);
+                if (max_index >= nums.length - 1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 
