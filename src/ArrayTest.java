@@ -1,3 +1,5 @@
+import javafx.beans.binding.When;
+
 import java.util.*;
 
 /**
@@ -15,8 +17,16 @@ public class ArrayTest {
 //        System.out.println(i);
 
 
-        int[] arr = {1, 2, 2, 3, 1};
-        System.out.println(findShortestSubArray(arr));
+//        int[] arr = {1, 2, 2, 3, 1};
+//        System.out.println(findShortestSubArray(arr));
+
+//        int[] arr = {3, 4, -1, 1};
+//        System.out.println(firstMissingPositive(arr));
+
+
+        int[] arr = {4, 2, 0, 3, 2, 5};
+//        int[] arr = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
+        System.out.println(trap(arr));
     }
 
     /**
@@ -225,4 +235,205 @@ public class ArrayTest {
         return minLen;
     }
 
+    /**
+     * 找出其中没有出现的正整数
+     * 只能遍历一次
+     * 不能定义额外空间
+     * Given 1,2,0
+     * return  3
+     * <p>
+     * Given 3,4，-1,1
+     * return 2
+     * <p>
+     * Given 7,8,9，11,12
+     * return 1
+     * <p>
+     * 0<=nums.len<=300
+     *
+     * @param nums
+     * @return
+     */
+    public static int firstMissingPositive(int[] nums) {
+        Map<Integer, Boolean> map = new HashMap<>();
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            map.put(nums[i], true);
+            max = Math.max(max, nums[i]);
+        }
+
+        for (int i = 1; i <= max; i++) {
+            if (!map.containsKey(i)) {
+                return i;
+            }
+        }
+
+        return max + 1;
+    }
+
+    /**
+     * 接雨水   长度 分别为height 的柱子 ，下雨天能接多少雨水
+     * <p>
+     * Given    4 2 0 3 2 5
+     * Return   9
+     * <p>
+     * Given    0 1 0 2 1 0 1 3 2 1 2 1
+     * Return   6
+     * <p>
+     * 思路  找到最高跟次高的两跟柱子  记录其索引left right ，计算其内部雨水注满容积  height * len - num[left+1].。num[right-1]
+     * height = min(left,right)
+     * len = right-left-1
+     * <p>
+     * 数组分裂 0-left  right- len-1
+     * 继续计算 直到 left == right
+     * <p>
+     * <p>
+     * 思路2  分层 从 0 -最高
+     * 双指针 从两侧向中间
+     *
+     * @param nums 柱子高度集合
+     * @return
+     */
+    public static int trap(int[] nums) {
+        int[] levels = Arrays.copyOf(nums, nums.length);
+        Arrays.sort(levels);
+
+        Set<Integer> levelSet = new HashSet<>();
+        for (int i = 0; i < levels.length; i++) {
+            if (levels[i] > 0) {
+                levelSet.add(levels[i]);
+            }
+        }
+        int index_temp = 0;
+        levels = new int[levelSet.size()];
+        Iterator<Integer> iterator = levelSet.iterator();
+        while (iterator.hasNext()) {
+            Integer next = iterator.next();
+            levels[index_temp] = next;
+            index_temp++;
+        }
+
+        int left = 0;
+        int right = nums.length - 1;
+        int zone = 0;
+        int level_index = 0;
+        while (left < right) {
+            int level = levels[level_index];
+            if (nums[left] < level) {
+                left++;
+                continue;
+            }
+            if (nums[right] < level) {
+                right--;
+                continue;
+            }
+
+            int last_level = level_index == 0 ? 0 : levels[level_index - 1];
+            zone = zone + getLevelZone(nums, last_level, level, left, right);
+            level_index++;
+        }
+        return zone;
+    }
+
+    private static int getLevelZone(int[] nums, int last_level, int level, int left, int right) {
+        int space = 0;
+
+        for (int i = left + 1; i < right; i++) {
+
+            if (nums[i] < level) {
+                if (nums[i] > last_level) {
+                    space = space + (level - nums[i]);
+                } else {
+                    space = space + (level - last_level);
+                }
+            }
+        }
+
+        return space;
+    }
+
+    /**
+     * 双指针解法
+     * 双指针 从两头遍历
+     * 哪头低加哪头
+     * 每向中间挪动一次，更新自己这一侧 最大值，如果当前值比最大值小 雨水容量 +=  最大值-当前值
+     *
+     * @param height
+     * @return
+     */
+    public static int trap2(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int result = 0;
+        int max_left = 0, max_right = 0;
+        while (left < right) {
+            if (height[left] < height[right]) {
+                if (height[left] >= max_left) {
+                    max_left = height[left];
+                } else {
+                    result += (max_left - height[left]);
+                }
+                left++;
+            } else {
+                if (height[right] >= max_right) {
+                    max_right = height[right];
+                } else {
+                    result += (max_right - height[right]);
+                }
+                right--;
+            }
+        }
+        return result;
+    }
+
+
+    public int climbStairs2(int n) {
+        if(n==1){
+            return 1;
+        }
+        //1,状态数组
+        int[] dp = new int[n];  //存储到达每一步的 的方案数
+
+        //状态方程 f(n) = f(n-1) + f(n-2) //到达最后一步的方案数  之前可能是一步 或者两步到达n的位置
+        //2.初始化状态数组
+        dp[0] = 1;
+        dp[1] = 2;
+        for (int i = 2; i < n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n - 1];
+    }
+
+    /**
+     *
+     * 路径规划
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        //路径规划  递归
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+        dfs(result, temp, n);
+        return result.size();
+    }
+
+    private void dfs(List<List<Integer>> result, List<Integer> temp, int n) {
+        if (n == 0) {
+            result.add(temp);
+            return;
+        }
+        if (n == 1) {
+            temp.add(1);
+            dfs(result, temp, n - 1);
+            temp.remove(temp.size() - 1);
+        } else {
+            temp.add(1);
+            dfs(result, temp, n - 1);
+            temp.remove(temp.size() - 1);
+
+            temp.add(2);
+            dfs(result, temp, n - 2);
+            temp.remove(temp.size() - 1);
+        }
+    }
 }
