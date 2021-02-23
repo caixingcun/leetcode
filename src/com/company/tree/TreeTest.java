@@ -5,10 +5,77 @@ import java.util.*;
 
 public class TreeTest {
 
-
     public static void main(String[] args) {
+        int[] postorder = {9, 15, 7, 20, 3};
+        int[] inorder = {9, 3, 15, 20, 7};
+
+        TreeNode node = new TreeTest().buildTree2(inorder, postorder);
 
 
+
+
+    }
+
+    private static void print(TreeNode node) {
+
+        if (node == null) {
+            System.out.println("null");
+            return;
+        }
+        if (node.left != null) {
+            print(node.left);
+        }
+        if (node.right != null) {
+            print(node.right);
+        }
+    }
+
+    public TreeNode buildTree2(int[] inorder, int[] postorder) {
+
+        int n = inorder.length;
+        inOrderMap = new HashMap<>(); //存储 节点数据 与中序位置
+        for (int i = 0; i < n; i++) {
+            inOrderMap.put(inorder[i], i);
+        }
+        return myBuildTree2(postorder, inorder, 0, n - 1, 0, n - 1);
+    }
+
+    /**
+     * * 根据 中序 后序 遍历数列 生成二叉树
+     * *   2
+     * * 1  3 中序
+     * *   3
+     * * 1  2 后续 先右子树 后左子树  再节点
+     * * <p>
+     * * 基本同 105  前序 中序 遍历数列 生成二叉树
+     * 取后续最后一个元素 作为节点
+     *
+     * @param postOrder 后续
+     * @param inOrder   中序
+     * @param from      后续 左
+     * @param to        后续右
+     * @param left      中序 左
+     * @param right     中序右
+     * @return
+     */
+    private TreeNode myBuildTree2(int[] postOrder, int[] inOrder, int from, int to, int left, int right) {
+
+        if (left > right) {
+            return null;
+        }
+        int root_value = postOrder[to];
+
+
+        int root_in_index = inOrderMap.get(root_value);
+        TreeNode root = new TreeNode(root_value);
+
+        int left_len = root_in_index - left;
+
+        root.left = myBuildTree2(postOrder, inOrder, from, from + left_len - 1, left, root_in_index - 1);
+
+        root.right = myBuildTree2(postOrder, inOrder, from + left_len, to - 1, root_in_index + 1, right);
+
+        return root;
     }
 
 
