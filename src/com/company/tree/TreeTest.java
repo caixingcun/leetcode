@@ -15,7 +15,21 @@ public class TreeTest {
 
 
     }
+    public int maxProfit(int[] prices) {
+        // 贪心算法
+        // 找到比之前小的值就丢掉
 
+        int min = Integer.MAX_VALUE;
+        int money = 0;
+        for (int i = 0; i < prices.length; i++) {
+            min = Math.min(min, prices[i]);
+            if (prices[i] > min) {
+                money = Math.max(prices[i] - min,money);
+            }
+        }
+
+        return money;
+    }
 
     /**
      * 二叉树 转单链表（只有右子树的二叉树）
