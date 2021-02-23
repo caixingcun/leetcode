@@ -14,6 +14,39 @@ public class TreeTest {
     }
 
     /**
+     * 二叉树最大深度  层序遍历
+     *
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result.size();
+        }
+
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = queue.poll();
+                temp.add(poll.val);
+                if (poll.left != null) {
+                    queue.offer(poll.left);
+                }
+                if (poll.right != null) {
+                    queue.offer(poll.right);
+                }
+            }
+            result.add(temp);
+        }
+
+        return result.size();
+    }
+
+    /**
      * 二叉树 层序遍历
      */
 
@@ -45,10 +78,9 @@ public class TreeTest {
     }
 
 
-
     /**
      * 判断是否是二叉搜索树
-     *
+     * <p>
      * 二叉搜索树 特质
      * 左子树只包含小于当前节点的数
      * 右字数只包含大于当前节点的数
@@ -57,15 +89,15 @@ public class TreeTest {
 
     public boolean isValidBST(TreeNode root) {
         List<Integer> result = new ArrayList<>();
-        dfsBst(result,root);
+        dfsBst(result, root);
         if (result.size() <= 1) {
             return true;
         }
 
-        for (int i = 0; i < result.size()-1; i++) {
+        for (int i = 0; i < result.size() - 1; i++) {
             if (result.get(i) < result.get(i + 1)) {
                 continue;
-            }else{
+            } else {
                 return false;
             }
         }
@@ -73,26 +105,27 @@ public class TreeTest {
 
     }
 
-    private void dfsBst(List<Integer> result ,TreeNode root) {
+    private void dfsBst(List<Integer> result, TreeNode root) {
         if (root == null) {
-            return ;
+            return;
         }
-        dfsBst(result,root.left);
+        dfsBst(result, root.left);
         result.add(root.val);
-        dfsBst(result,root.right);
+        dfsBst(result, root.right);
     }
 
     /**
      * 二叉搜索数
      * 1..n 为节点 共有多少种儿叉搜索树
-     *
-     *  1个节点 搜索树 为 1
-     *
-     *  选择第i作为根
-     *  第i所有二叉搜索树 集合是左子树集合 和 右子数集合的 笛卡尔积
-     *  对于笛卡尔积中的每个元素 加上根节点后形成完成的二搜索树
-     *
+     * <p>
+     * 1个节点 搜索树 为 1
+     * <p>
+     * 选择第i作为根
+     * 第i所有二叉搜索树 集合是左子树集合 和 右子数集合的 笛卡尔积
+     * 对于笛卡尔积中的每个元素 加上根节点后形成完成的二搜索树
+     * <p>
      * G(n) =  i从1..n 求和 G(i-1)*G(n-i)
+     *
      * @param n
      * @return
      */
