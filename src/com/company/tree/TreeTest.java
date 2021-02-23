@@ -1,20 +1,57 @@
 package com.company.tree;
 
+import sun.reflect.generics.tree.Tree;
+
 import javax.xml.soap.Node;
 import java.util.*;
 
 public class TreeTest {
 
     public static void main(String[] args) {
-        int[] postorder = {9, 15, 7, 20, 3};
-        int[] inorder = {9, 3, 15, 20, 7};
+//        int[] postorder = {9, 15, 7, 20, 3};
+//        int[] inorder = {9, 3, 15, 20, 7};
 
-        TreeNode node = new TreeTest().buildTree2(inorder, postorder);
-
-
+//        TreeNode node = new TreeTest().buildTree2(inorder, postorder);
 
 
     }
+
+
+    /**
+     * 二叉树 转单链表（只有右子树的二叉树）
+     * 前序遍历
+     *
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        List<TreeNode> list = new ArrayList<>();
+        preorderTraversal(root, list);
+
+
+        for (int i = 1; i < list.size(); i++) {
+            TreeNode pre = list.get(i - 1);
+            TreeNode curr = list.get(i);
+            pre.right = curr;
+            pre.left = null;
+        }
+
+    }
+
+    /**
+     * 前序遍历
+     *
+     * @param root
+     * @param list
+     */
+    private void preorderTraversal(TreeNode root, List<TreeNode> list) {
+        if (root == null) {
+            return;
+        }
+        list.add(root);
+        preorderTraversal(root.left, list);
+        preorderTraversal(root.right, list);
+    }
+
 
     private static void print(TreeNode node) {
 
