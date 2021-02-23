@@ -1,7 +1,6 @@
 package com.company.hash;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class HashTest {
 
@@ -29,5 +28,33 @@ public class HashTest {
             }
         }
         return longestStreak;
+    }
+
+    public int singleNumber(int[] nums) {
+        // hashMap
+        // 不需要额外空间 那就冒泡排序
+        if (nums.length == 1) {
+            return nums[0];
+        }
+
+        Arrays.sort(nums);
+
+        for (int i = 0 ;i < nums.length; i++) {
+            if (i == 0) {
+                if (nums[i + 1]!=nums[i]) {
+                    return nums[0];
+                }
+            }else if (i == nums.length - 1) {
+                if (nums[i - 1] != nums[i]) {
+                    return nums[i];
+                }
+            }
+
+            else if (nums[i] != nums[i + 1] && nums[i] != nums[i - 1]) {
+                return nums[i];
+            }
+        }
+
+        return 0;
     }
 }
