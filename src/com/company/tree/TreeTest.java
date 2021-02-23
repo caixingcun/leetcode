@@ -1,9 +1,6 @@
 package com.company.tree;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class TreeTest {
 
@@ -13,8 +10,129 @@ public class TreeTest {
 
     }
 
+    class Solution {
+        // 前序 存hash 方便快速取出数据 中序 位置，便于通过中序位置 获取中序左右子树长度，通过获取的左右子树长度,分割之前的中序 ，以及切割出子数前序数列 ，进行迭代
+
+
+        private Map<Integer, Integer> indexMap;
+
+        public TreeNode myBuildTree(int[] preorder, int[] inorder, int preorder_left, int preorder_right, int inorder_left, int inorder_right) {
+            //当前树节点构建
+            //出口
+            if (preorder_left > preorder_right) {
+                return null;
+            }
+            // root 在前序中的位置
+            int preorder_root = preorder_left; //前序第一个数据 就是根节点
+            // 根据数据 获取中序 root 的索引
+            int inorder_root = indexMap.get(preorder[preorder_root]);
+
+            // 构建当前节点
+            TreeNode root = new TreeNode(preorder[preorder_root]);
+
+            //  当前节点在中序中的位置 - 中序最左侧节点  = 左子树节点数
+            int size_left_subtree = inorder_root - inorder_left;
+            // 前序左子树 left+1 扣除当前root ， left + left_size = 前序左子树 最大index
+            // 前序右子树 left+left_size+1 左子树后一位作为右子树第一位   pre_right 之前的前序右子树右侧
+
+            // 中序左子树 inorder_left , inorder_root-1  中序的左子树，介于 当前节点之前
+            // 中序右子树 inorder_root+1 , inorder_right
+            root.left = myBuildTree(preorder, inorder, preorder_left + 1, preorder_left + size_left_subtree, inorder_left, inorder_root - 1);
+            // 递归地构造右子树，并连接到根节点
+            // 先序遍历中「从 左边界+1+左子树节点数目 开始到 右边界」的元素就对应了中序遍历中「从 根节点定位+1 到 右边界」的元素
+            root.right = myBuildTree(preorder, inorder, preorder_left + size_left_subtree + 1, preorder_right, inorder_root + 1, inorder_right);
+            return root;
+        }
+
+        public TreeNode buildTree(int[] preorder, int[] inorder) {
+
+            int n = preorder.length;
+            indexMap = new HashMap<>();
+            for (int i = 0; i < n; i++) {
+                //快速定位跟节点 在前序中的位置
+                indexMap.put(inorder[i], i);
+            }
+
+            return myBuildTree(preorder, inorder, 0, n - 1, 0, n - 1);
+        }
+    }
+
+
     /**
-     * 二叉树最大深度  层序遍历
+     * 根据二叉树 前序 中序 构造二叉树
+     * 前序 先节点 后左右子叶
+     * 中序 先左子叶 后节点 再右子叶
+     * Given  前序遍历 preorder = [3,9,20,15,7]
+     * <p>
+     * 中序遍历 inorder  = [9,3,15,20,7]
+     * <p>
+     * Hash 存储 中序 数据 跟其index
+     * 调用递归 构建节点
+     * <p>
+     * 递归方法
+     * <p>
+     * <p>
+     * <p>
+     * <p>
+     * <p>
+     * <p>
+     * 思路
+     *
+     * @param preorder
+     * @param inorder
+     * @return
+     */
+    private Map<Integer, Integer> indexMap;
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int n = preorder.length;
+        indexMap = new HashMap<>(); //存储 节点数据 与中序位置
+        for (int i = 0; i < n; i++) {
+            indexMap.put(inorder[i], i);
+        }
+
+        return myBuildTree(preorder, inorder, 0, n - 1, 0, n - 1);
+    }
+
+
+    private TreeNode myBuildTree(int[] preorder, int[] inorder, int preorder_left, int preorder_right, int inorder_left, int inorder_right) {
+        //出口
+        //前序左右节点相遇
+        if (preorder_left > preorder_right) {
+            return null;
+        }
+
+        //pre   R x x
+        //in    x R x
+
+        //前序第一个节点 就是跟节点， 中序 也就是 Hash 可以取出其中序位置 ，
+        // 构建当前节点 前序的第一个节点值（还缺左右子节点）
+        // 根据节点中序位置可以拆分左右子树，还是中序子树
+
+
+
+
+        // 前序 左子节点 作为root
+        int preorder_root = preorder_left;
+        //获取中序中当前节点数 所在位置
+        int inorder_root = indexMap.get(preorder[preorder_root]);
+        //构建当前根节点
+        TreeNode root = new TreeNode(preorder[preorder_root]);
+
+        //得到左子树的节点数
+        int size_left_subtree = inorder_root - inorder_left;
+        //递归构造左子树，并连接到根节点
+        //先遍历中 [从 左边界+1开始的 size_left_subtree] 个元素 就对应了中序遍历中 [从左边界开始 到根节点定位-1]的元素
+        root.left = myBuildTree(preorder, inorder, preorder_left + 1, preorder_right + size_left_subtree, inorder_left, inorder_root - 1);
+        //递归构造右子树 并连接到根节点
+        //前序遍历中 [从 左边界+1+ 左子树节点数,右边界] 元素中对应 中序[从根节点+1到 右边界]元素
+        root.right = myBuildTree(preorder, inorder, preorder_left + size_left_subtree + 1, preorder_right, inorder_root + 1, inorder_right);
+
+        return root;
+    }
+
+    /**
+     * 二叉树最大深度  层序遍
      *
      * @param root
      * @return
