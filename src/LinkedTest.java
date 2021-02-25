@@ -1,3 +1,4 @@
+import jdk.nashorn.internal.ir.LiteralNode;
 import org.omg.CORBA.PUBLIC_MEMBER;
 import org.w3c.dom.NodeList;
 import sun.security.x509.EDIPartyName;
@@ -69,6 +70,84 @@ public class LinkedTest {
         listNodes.get(listNodes.size() - 1).next = null;
         return listNodes.get(0);
 
+    }
+
+    /**
+     * 常数级 时间复杂度 O（nlogn） 空间复杂度O（1）  实现链表排序
+     *
+     * 不使用额外空间完成排序
+     *
+     * 尾递归  快慢指针找到链表中间点 拆分链表为两个子链表 排序子链表 再合并
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList2(ListNode head) {
+        return sortListMethod(head, null);
+
+    }
+    // 快慢指针 找到链表中间节点
+    private ListNode sortListMethod(ListNode head, ListNode tail) {
+        //长度为 0 或者 1 返回当前链表
+        if (head == null) {
+            return head;
+        }
+        if (head.next == tail) {
+            head.next = null;
+            return head;
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != tail) {
+            slow = slow.next;
+            fast = fast.next;
+            if (fast != tail) {
+                fast = fast.next;
+            }
+        }
+        ListNode mid = slow;
+
+        ListNode list1 = sortListMethod(head, mid);
+
+        ListNode list2 = sortListMethod(mid, tail);
+
+        ListNode sorted = mergeListNode(list1, list2);
+
+        return sorted;
+    }
+
+    /**
+     * 两个有序链表合并
+     * @param head1
+     * @param head2
+     * @return
+     */
+    private ListNode mergeListNode(ListNode head1, ListNode head2) {
+        ListNode dummyHead = new ListNode(0);
+
+        ListNode temp = dummyHead;
+        ListNode temp1 = head1;
+        ListNode temp2 = head2;
+
+        while (temp1 != null && temp2 != null) {
+
+            if (temp1.val <= temp2.val) {
+                temp.next = temp1;
+                temp1 = temp1.next;
+            }else{
+                temp.next = temp2;
+                temp2 = temp2.next;
+            }
+            temp = temp.next;
+        }
+        if (temp1 != null) {
+            temp.next = temp1;
+        }
+        if (temp2 != null) {
+            temp.next = temp2;
+        }
+        return dummyHead.next;
     }
 
     /**
