@@ -3,8 +3,11 @@ import org.w3c.dom.NodeList;
 import sun.security.x509.EDIPartyName;
 
 import javax.xml.soap.Node;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 链表操作
@@ -41,10 +44,38 @@ public class LinkedTest {
     }
 
     /**
+     * 排序链表  升序排列 返回排序后的链表
+     *
+     *  使用集合 遍历 存储节点
+     *  集合排序后 进行节点拼接
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+
+        if (head == null) {
+            return null;
+        }
+        List<ListNode> listNodes = new ArrayList<>();
+        while (head != null) {
+            listNodes.add(head);
+            head = head.next;
+        }
+        Collections.sort(listNodes, (n1, n2) -> n1.val - n2.val);
+        for (int i = 1; i < listNodes.size(); i++) {
+            listNodes.get(i - 1).next = listNodes.get(i);
+        }
+        listNodes.get(listNodes.size() - 1).next = null;
+        return listNodes.get(0);
+
+    }
+
+    /**
      * 给定一个链表
      * 无环 返回null
      * 有环 返回入环的第一个节点
-     *
+     * <p>
      * HashSet 存储 节点数据 ，
      * 如果不存在环 则所有数据不存在重复存储
      * 如果存在环，则环入口为首次重复存储的节点
@@ -53,13 +84,13 @@ public class LinkedTest {
      * @return
      */
     public ListNode detectCycle(ListNode head) {
-            ListNode pos = head;
+        ListNode pos = head;
         HashSet<ListNode> hashSet = new HashSet<>();
         while (pos != null) {
             if (!hashSet.contains(pos)) {
                 hashSet.add(head);
                 pos = pos.next;
-            }else{
+            } else {
                 return pos;
             }
         }
@@ -68,7 +99,6 @@ public class LinkedTest {
 
     /**
      * 以k个节点为一组 进行翻转 链表
-     *
      *
      * @param head
      * @param k
@@ -82,7 +112,7 @@ public class LinkedTest {
         while (remainNum < k) {
             //链表中剩余节点不足k个
             // 无需翻转 直接返回 head
-            if (nextHead== null) {
+            if (nextHead == null) {
                 return head;
             }
             remainNum++;
@@ -100,11 +130,12 @@ public class LinkedTest {
 
     /**
      * 反转 链表 前n个节点
+     *
      * @param n
      * @param head
      * @return
      */
-    public static ListNode reverseTopN(ListNode head,int n){
+    public static ListNode reverseTopN(ListNode head, int n) {
         ListNode pre = null;
         ListNode curr = head;
         for (int i = 0; i < n; i++) {
@@ -121,10 +152,11 @@ public class LinkedTest {
 
     /**
      * 若干链表倒序
+     *
      * @param head
      * @return
      */
-    public static ListNode reverseList(ListNode head){
+    public static ListNode reverseList(ListNode head) {
         ListNode pre = null;
         ListNode curr = head;
         while (curr != null) {
