@@ -1,3 +1,5 @@
+package com.company.listnode;
+
 import jdk.nashorn.internal.ir.LiteralNode;
 import org.omg.CORBA.PUBLIC_MEMBER;
 import org.w3c.dom.NodeList;
