@@ -3,6 +3,7 @@ import org.w3c.dom.NodeList;
 import sun.security.x509.EDIPartyName;
 
 import javax.xml.soap.Node;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -37,6 +38,32 @@ public class LinkedTest {
         }
 
 
+    }
+
+    /**
+     * 给定一个链表
+     * 无环 返回null
+     * 有环 返回入环的第一个节点
+     *
+     * HashSet 存储 节点数据 ，
+     * 如果不存在环 则所有数据不存在重复存储
+     * 如果存在环，则环入口为首次重复存储的节点
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+            ListNode pos = head;
+        HashSet<ListNode> hashSet = new HashSet<>();
+        while (pos != null) {
+            if (!hashSet.contains(pos)) {
+                hashSet.add(head);
+                pos = pos.next;
+            }else{
+                return pos;
+            }
+        }
+        return null;
     }
 
     /**
