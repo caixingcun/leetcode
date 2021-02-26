@@ -1,10 +1,34 @@
 package com.company.hash;
 
+import com.company.dp.Word;
 import javafx.util.Pair;
 
 import java.util.*;
 
 public class FindNumberOfValidWord {
+    public static void main(String[] args) {
+
+//        String word = "word";
+//        System.out.println(getMark(word));
+//        String puzzle = "wrodxx";
+//        System.out.println(getMark(puzzle));
+//
+//        if ((getMark(puzzle) & getMark(word)) == getMark(word)) {
+//            char c = puzzle.charAt(0);
+//            int firstMark = getMark(c);
+//            int wordMark = getMark(word);
+//            if ((firstMark & wordMark) == firstMark) {
+//                System.out.println("success");
+//            }
+//        }
+
+        String[] words = {"apple", "pleas", "please"};
+        String[] puzzles = {"aelpsxy", "saelpxy"};
+        System.out.println(new FindNumberOfValidWord().findNumOfValidWords2(words, puzzles));
+
+    }
+
+
     public List<Integer> findNumOfValidWords(String[] words, String[] puzzles) {
         // puzzle 谜面
         // word 谜底
@@ -58,4 +82,58 @@ public class FindNumberOfValidWord {
 
         return result;
     }
+
+    public List<Integer> findNumOfValidWords2(String[] words, String[] puzzles) {
+        // puzzle 谜面
+        // word 谜底
+
+        // word 只包含plzzle第一个字母    word.contains(puzzle.char[0])
+        // word中每一个字母都能从 puzzle中找到  puzzle.containAll(word.chatAt)
+
+        Map<Integer, Integer> wordMap = new HashMap<>();
+        for (int a = 0; a < words.length; a++) {
+            int mask = getMark(words[a]);
+            if (Integer.bitCount(mask) <= 7) { //包含1的数量不能大于7
+                Integer frequent = wordMap.getOrDefault(mask, 0);
+                frequent = frequent + 1;
+                wordMap.put(mask, frequent);
+            }
+        }
+
+
+        List<Integer> result = new ArrayList<>();
+
+        for (int i = 0; i < puzzles.length; i++) {
+            int puzzMark = getMark(puzzles[i]);
+            int firstMark = getMark(puzzles[i].charAt(0));
+            int count = 0;
+
+            for (Map.Entry<Integer, Integer> entry : wordMap.entrySet()) {
+                int wordMark = entry.getKey();
+                if ((wordMark & puzzMark) == wordMark) {
+                    if ((firstMark & wordMark) == firstMark) {
+                        count += entry.getValue();
+                    }
+                }
+            }
+            result.add(count);
+        }
+
+        return result;
+    }
+
+    public static Integer getMark(String s) {
+        int mark = 0;
+        for (int i = 0; i < s.length(); i++) {
+            mark |= 1 << s.charAt(i) - 'a';
+        }
+        return mark;
+    }
+
+    public static Integer getMark(char a) {
+        int mark = 0;
+        mark |= 1 << a - 'a';
+        return mark;
+    }
+
 }
