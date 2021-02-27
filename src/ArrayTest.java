@@ -436,4 +436,12 @@ public class ArrayTest {
             temp.remove(temp.size() - 1);
         }
     }
+
+
+    public int findKthLargest(int[] nums, int k) {
+        Arrays.sort(nums);
+        int len = nums.length;
+        return nums[len - k];
+    }
+
 }

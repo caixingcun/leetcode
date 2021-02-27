@@ -28,7 +28,33 @@ public class FindNumberOfValidWord {
 
     }
 
+    public List<Integer> findNumOfValidWords3(String[] words, String[] puzzles) {
 
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < puzzles.length; i++) {
+            String puzzle = puzzles[i];
+
+            char c = puzzle.charAt(0);
+            int count = 0;
+            for (int i1 = 0; i1 < words.length; i1++) {
+                String word = words[i1];
+                if (word.contains(c + "")) {
+                    // 并且 word中所有元素在puzz中存在
+                    for (int i2 = 0; i2 < word.length(); i2++) {
+                        if (!puzzle.contains(word.charAt(i2) + "")) {
+                            break;
+                        }
+                        if (i2 == word.length() - 1) {
+                            count++;
+                        }
+                    }
+                }
+            }
+            result.add(count);
+
+        }
+        return result;
+    }
     public List<Integer> findNumOfValidWords(String[] words, String[] puzzles) {
         // puzzle 谜面
         // word 谜底
@@ -37,6 +63,7 @@ public class FindNumberOfValidWord {
         // word中每一个字母都能从 puzzle中找到  puzzle.containAll(word.chatAt)
 
         List<Set<Character>> wordsSetList = new ArrayList<>();
+
         for (int a = 0; a < words.length; a++) {
             Set<Character> wordSet = new HashSet<>();
             String word = words[a];
@@ -48,6 +75,7 @@ public class FindNumberOfValidWord {
 
 
         List<Set<Character>> puzzleSetList = new ArrayList<>();
+
         for (int i = 0; i < puzzles.length; i++) {
             Set<Character> set = new HashSet<>();
             for (int j = 0; j < puzzles[i].length(); j++) {
@@ -91,6 +119,7 @@ public class FindNumberOfValidWord {
         // word中每一个字母都能从 puzzle中找到  puzzle.containAll(word.chatAt)
 
         Map<Integer, Integer> wordMap = new HashMap<>();
+
         for (int a = 0; a < words.length; a++) {
             int mask = getMark(words[a]);
             if (Integer.bitCount(mask) <= 7) { //包含1的数量不能大于7
