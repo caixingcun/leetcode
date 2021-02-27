@@ -48,10 +48,38 @@ public class MaximalSquare {
 
     public int maximalSquare2(char[][] matrix) {
         // 动态规划
+        // 动态规划
         // 元素 1  dp=1
         // 元素 左上 左 上 为1  dp = dp + 1
         // 元素 坐上 左 上 为2  dp = dp + 2
-        return 0;
+        int rn = matrix.length;
+        int cn = matrix[0].length;
+        int result = 0;
+        int[][] dp = new int[rn][cn];
+
+        for (int i = 0; i < rn; i++) {
+            for (int j = 0; j < cn; j++) {
+                if (matrix[i][j] == '1') {
+                    if(i==0||j==0){
+                        dp[i][j]=(matrix[i][j]=='1'?1:0);
+                        result = Math.max(dp[i][j], result);
+                    }else{
+                        int min = min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+                        dp[i][j] = min + 1;
+                        result = Math.max(dp[i][j], result);
+                    }
+                }
+
+            }
+        }
+        return result*result;
     }
 
+    public int min(int...params){
+        int min = params[0];
+        for (int i = 1; i < params.length; i++) {
+            min = Math.min(params[i], min);
+        }
+        return min;
+    }
 }
