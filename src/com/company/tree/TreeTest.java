@@ -356,4 +356,25 @@ public class TreeTest {
         }
     }
 
+
+    /**
+     * 226 反转一颗二叉树
+     *  左右子树 调换位置 子树的子树 也调换位置
+     */
+
+    public TreeNode invertTree(TreeNode root) {
+
+        return invert(root);
+    }
+
+    private TreeNode invert(TreeNode root) {
+        if (root == null) {
+            return root;
+        }
+        TreeNode right = root.right;
+
+        root.right = invert(root.left);
+        root.left = invert(right);
+        return root;
+    }
 }
