@@ -1,8 +1,10 @@
 package com.company.tree;
 
+import com.company.listnode.ListNode;
 import sun.reflect.generics.tree.Tree;
 
 import javax.xml.soap.Node;
+import javax.xml.transform.Result;
 import java.util.*;
 
 public class TreeTest {
@@ -15,6 +17,7 @@ public class TreeTest {
 
 
     }
+
     public int maxProfit(int[] prices) {
         // 贪心算法
         // 找到比之前小的值就丢掉
@@ -24,7 +27,7 @@ public class TreeTest {
         for (int i = 0; i < prices.length; i++) {
             min = Math.min(min, prices[i]);
             if (prices[i] > min) {
-                money = Math.max(prices[i] - min,money);
+                money = Math.max(prices[i] - min, money);
             }
         }
 
@@ -359,7 +362,7 @@ public class TreeTest {
 
     /**
      * 226 反转一颗二叉树
-     *  左右子树 调换位置 子树的子树 也调换位置
+     * 左右子树 调换位置 子树的子树 也调换位置
      */
 
     public TreeNode invertTree(TreeNode root) {
@@ -377,4 +380,31 @@ public class TreeTest {
         root.left = invert(right);
         return root;
     }
+
+
+    private TreeNode ans;
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+
+        dfsFindParent(root, p, q);
+        return ans;
+
+    }
+
+    private boolean dfsFindParent(TreeNode root, TreeNode p,TreeNode q) {
+        if (root == null) {
+            return false;
+        }
+        boolean lson = dfsFindParent(root.left, p, q);
+        boolean rson = dfsFindParent(root.right, p, q);
+        // 满足条件 更新节点
+        // 左右子树包含p q  / root=p/q 并且
+        if ((lson && rson) || ((root.val == p.val || root.val == q.val)) && (lson || rson)) {
+            ans = root;
+        }
+        // 当前根节点 == p或者q ，并且 目标 p q
+        return lson || rson || (root.val == p.val || root.val == q.val);
+    }
+
+
 }
