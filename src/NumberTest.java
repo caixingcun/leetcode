@@ -33,7 +33,12 @@ public class NumberTest {
 //        System.out.println(longestOnes1(arr, 3));
 
 
-        System.out.println(multiply("9", "9"));
+//        System.out.println(multiply("9", "9"));
+
+
+        int[] arr = {1, 2, 3, 4};
+
+        System.out.println(new NumberTest().productExceptSelf(arr));
     }
 
     /**
@@ -289,5 +294,38 @@ public class NumberTest {
         }
     }
 
+    /**
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int len = nums.length;
+        int[] result = new int[len];
+
+        int[] left = new int[len];
+        int[] right = new int[len];
+
+        for (int i = 0; i < len; i++) {
+            if (i == 0) {
+                left[i] = 1;
+            } else {
+                left[i] = left[i - 1] * nums[i - 1];
+            }
+        }
+
+        for (int i = len - 1; i >= 0; i--) {
+            if (i == len - 1) {
+                right[i] = 1;
+            } else {
+                right[i] = right[i + 1] * nums[i + 1];
+            }
+        }
+
+
+        for (int i = 0; i < len; i++) {
+            result[i] = left[i] * right[i];
+        }
+        return result;
+    }
 
 }
