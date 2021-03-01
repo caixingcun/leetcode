@@ -464,4 +464,36 @@ public class ArrayTest {
         }
 
     }
+
+    /**
+     * 寻找重复数
+     * @param nums
+     * @return
+     */
+    public int findDuplicate(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int orDefault = map.getOrDefault(nums[i], 0);
+            if (orDefault > 0) {
+                return nums[i];
+            }else{
+                map.put(nums[i],   1);
+            }
+        }
+        return 0;
+    }
+
+    public int findDuplicate2(int[] nums) {
+
+        for (int i = 0; i < nums.length; i++) {
+
+            int abs = Math.abs(nums[i]);
+            int index = abs - 1;
+            if (nums[index] < 0) {
+                return Math.abs(nums[index]);
+            }
+            nums[index] = -nums[index];
+        }
+        return 0;
+    }
 }
