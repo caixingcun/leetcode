@@ -24,9 +24,13 @@ public class ArrayTest {
 //        System.out.println(firstMissingPositive(arr));
 
 
-        int[] arr = {4, 2, 0, 3, 2, 5};
+//        int[] arr = {4, 2, 0, 3, 2, 5};
 //        int[] arr = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
-        System.out.println(trap(arr));
+//        System.out.println(trap(arr));
+
+
+        int[] arr = {0, 1, 0, 3, 12};
+        new ArrayTest().moveZeroes(arr);
     }
 
     /**
@@ -444,4 +448,20 @@ public class ArrayTest {
         return nums[len - k];
     }
 
+
+    public void moveZeroes(int[] nums) {
+
+        // 冒泡 把0 当成最大的数
+
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 0; j < nums.length - i-1; j++) {
+                if (nums[j] == 0 && nums[j + 1] != 0) {
+                    int temp = nums[j + 1];
+                    nums[j + 1] = nums[j];
+                    nums[j] = temp;
+                }
+            }
+        }
+
+    }
 }
