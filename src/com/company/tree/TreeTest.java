@@ -1,10 +1,5 @@
 package com.company.tree;
 
-import com.company.listnode.ListNode;
-import sun.reflect.generics.tree.Tree;
-
-import javax.xml.soap.Node;
-import javax.xml.transform.Result;
 import java.util.*;
 
 public class TreeTest {
@@ -17,6 +12,43 @@ public class TreeTest {
 
 
     }
+
+    public String serialize(TreeNode root) {
+        return rserialize(root, "");
+    }
+
+    private String rserialize(TreeNode root, String s) {
+        if (root == null) {
+            s += "None,"; //以None 为左右树 结束标签
+        }else { //前序遍历
+            s += (root.val + ",");
+            s = rserialize(root.left, s);
+            s = rserialize(root.right, s);
+        }
+        return s;
+    }
+
+
+    public TreeNode deserialize(String data) {
+        String[] data_array = data.split(",");
+        LinkedList<String> data_list = new LinkedList<String>(Arrays.asList(data_array));
+
+
+        return rdeserialize(data_list);
+   }
+
+    private TreeNode rdeserialize(LinkedList<String> l) {
+        if (l.get(0).equals("None")) { //None 当前树 终止
+            l.remove(0);
+            return null;
+        }
+        TreeNode root = new TreeNode(Integer.valueOf(l.get(0))); //前序 获取第一个节点为根节点
+        l.remove(0); // 移除第一个节点
+        root.left = rdeserialize(l); //传入数组 列出左树 ，如果传入l.get(0)为null 会移除null并直接返回
+        root.right = rdeserialize(l); // 传入剩余数组 剩余数组 到右树
+        return root;
+    }
+
 
     public int maxProfit(int[] prices) {
         // 贪心算法
@@ -340,9 +372,6 @@ public class TreeTest {
     }
 
 
-
-
-
     /**
      * 226 反转一颗二叉树
      * 左右子树 调换位置 子树的子树 也调换位置
@@ -374,7 +403,7 @@ public class TreeTest {
 
     }
 
-    private boolean dfsFindParent(TreeNode root, TreeNode p,TreeNode q) {
+    private boolean dfsFindParent(TreeNode root, TreeNode p, TreeNode q) {
         if (root == null) {
             return false;
         }
