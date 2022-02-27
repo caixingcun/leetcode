@@ -4,21 +4,14 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
- * 26
+ * 26 组合多个有序链表为一个
  */
 public class LeetCode26 {
     public static void main(String[] args) {
 
     }
 
-    public static class ListNode {
-        public Integer value;
-        public ListNode next;
-    }
-
     public static class ListNodeCompare implements Comparator<ListNode> {
-
-
         @Override
         public int compare(ListNode o1, ListNode o2) {
             return o1.value - o2.value;
